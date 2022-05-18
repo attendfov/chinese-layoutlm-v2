@@ -325,7 +325,7 @@ def train_test_split(document):
     print('')
 
     train, dev = [], []
-    dev_index = [97, 135, 8, 140, 142, 15, 156, 31, 71, 9, 134, 136, 32, 33, 1, 2, 3, 4]
+    dev_index = [97, 167, 8, 140, 142, 15, 156, 31, 71, 9, 134, 136, 32, 33, 1, 2, 3, 4]
     for doc in document:
         if doc['id'] in dev_index:
             dev.append(doc)
