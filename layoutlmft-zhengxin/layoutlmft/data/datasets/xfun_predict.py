@@ -8,12 +8,17 @@ import datasets
 from layoutlmft.data.utils import load_image, merge_bbox, normalize_bbox, simplify_bbox
 from transformers import AutoTokenizer
 
-
-_URL = os.path.join(os.getcwd(), "data/xfund-and-funsd/XFUND-and-FUNSD/")
-print(_URL)
+_URL = os.path.join(os.getcwd(), "../../data/zhengxin/data/标注批1部分批2/")
 
 _LANG = ["zh", "de", "es", "fr", "en", "it", "ja", "pt"]
 logger = logging.getLogger(__name__)
+
+labels = ['.100', '200.201', '200.202', '.300', '.301', '.302', '.303',
+          '.400', '.401', '.405', '.406', '500.501', '500.502', '500.503']
+
+tags = ['O', 'B-.100', 'I-.100', 'B-200.201', 'I-200.201', 'B-200.202', 'I-200.202', 'B-.300', 'I-.300', 'B-.301', 'I-.301',
+        'B-.302', 'I-.302', 'B-.303', 'I-.303', 'B-.400', 'I-.400', 'B-.401', 'I-.401', 'B-.405', 'I-.405', 'B-.406',
+        'I-.406', 'B-500.501', 'I-500.501', 'B-500.502', 'I-500.502', 'B-500.503', 'I-500.503']
 
 
 class XFUNConfig(datasets.BuilderConfig):
@@ -46,7 +51,7 @@ class XFUN(datasets.GeneratorBasedBuilder):
                     "bbox": datasets.Sequence(datasets.Sequence(datasets.Value("int64"))),
                     "labels": datasets.Sequence(
                         datasets.ClassLabel(
-                            names=["O", "B-QUESTION", "B-ANSWER", "B-HEADER", "I-ANSWER", "I-QUESTION", "I-HEADER"]
+                            names=tags
                         )
                     ),
                     "image": datasets.Array3D(shape=(3, 224, 224), dtype="uint8"),
@@ -54,7 +59,7 @@ class XFUN(datasets.GeneratorBasedBuilder):
                         {
                             "start": datasets.Value("int64"),
                             "end": datasets.Value("int64"),
-                            "label": datasets.ClassLabel(names=["HEADER", "QUESTION", "ANSWER"]),
+                            "label": datasets.ClassLabel(names=labels),
                         }
                     ),
                     "relations": datasets.Sequence(

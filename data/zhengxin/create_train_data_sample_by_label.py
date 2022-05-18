@@ -51,6 +51,9 @@ all_labels = ['100', '.100', '200', '201', '200.201', '300', '.300', '301', '.30
               '400', '.400', '401', '.401', '405', '.405', '406', '.406', '500', '501', '500.501', '502', '500.502',
               '503', '500.503']
 
+labels = ['.100', '200.201', '200.202', '.300', '.301', '.302', '.303',
+          '.400', '.401', '.405', '.406', '500.501', '500.502', '500.503']
+
 
 def get_uuid():
     return ''.join(str(uuid.uuid4()).split('-'))
@@ -306,18 +309,39 @@ def re_visualize():
             os.makedirs(os.path.dirname(img_save_path))
         save_img(img, img_save_path)
 
-def split_data_by_doc(document):
-    img_names = []
+
+def train_test_split(document):
+    label2data = {}
+    for i, doc in enumerate(document):
+        for line in doc['document']:
+            label = line['label']
+            if label in labels:
+                if label in label2data.keys():
+                    label2data[label].append(i)
+                else:
+                    label2data[label] = [i]
+    label2data = {k: list(set(v)) for k, v in label2data.items()}
+    label2data = dict(sorted(label2data.items(), key=lambda x: len(x[1])))
+    print('')
+
+    train, dev = [], []
+    dev_index = [97, 135, 8, 140, 142, 15, 156, 31, 71, 9, 134, 136, 32, 33, 1, 2, 3, 4]
     for doc in document:
-        basename = os.path.basename(doc['img']['fname'])
-        name = os.path.splitext(basename)[0]
-        _name = ''.join(name.split('_')[:-1])
-        img_names.append(_name)
-    img_names = sorted(img_names)
+        if doc['id'] in dev_index:
+            dev.append(doc)
+        else:
+            train.append(doc)
+
+    for i in range(len(train)):
+        train[i]['id'] = i
+    for i in range(len(dev)):
+        dev[i]['id'] = i
+    return train, dev
+
 
 def split_train_data():
     '''
-    根据pdf文档进行分组
+    根据label进行dev的获取
     :return:
     '''
     root = 'data/标注批1部分批2'
@@ -330,8 +354,8 @@ def split_train_data():
         document[i]['id'] = i
 
     import shutil
-    dev_nums = int(len(document) * 0.2)
-    dev, train = document[:dev_nums], document[dev_nums:]
+
+    train, dev = train_test_split(document)
 
     if not os.path.exists(os.path.join(root, 'zh.train')):
         os.mkdir(os.path.join(root, 'zh.train'))
@@ -362,7 +386,6 @@ def split_train_data():
         for j, line in enumerate(doc['document']):
             if '.' not in line['label']:
                 dev[i]['document'][j]['label'] = 'other'
-
 
     with open(os.path.join(root, 'zh.train.json'), 'w', encoding='utf-8') as f:
         documents['documents'] = train

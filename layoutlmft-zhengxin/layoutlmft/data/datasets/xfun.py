@@ -8,8 +8,7 @@ import datasets
 from layoutlmft.data.utils import load_image, merge_bbox, normalize_bbox, simplify_bbox
 from transformers import AutoTokenizer
 
-# _URL = os.path.join(os.getcwd(), "data/xfund-and-funsd/XFUND-and-FUNSD/")
-_URL = os.path.join(os.getcwd(), "data/征信报告/data/标注批1部分批2/")
+_URL = os.path.join(os.getcwd(), "../../data/zhengxin/data/标注批1部分批2/")
 print(_URL)
 
 _LANG = ["zh", "de", "es", "fr", "en", "it", "ja", "pt"]
@@ -53,7 +52,6 @@ class XFUN(datasets.GeneratorBasedBuilder):
                     "bbox": datasets.Sequence(datasets.Sequence(datasets.Value("int64"))),
                     "labels": datasets.Sequence(
                         datasets.ClassLabel(
-                            # names=["O", "B-QUESTION", "B-ANSWER", "B-HEADER", "I-ANSWER", "I-QUESTION", "I-HEADER"]
                             names=tags
                         )
                     ),
@@ -62,7 +60,6 @@ class XFUN(datasets.GeneratorBasedBuilder):
                         {
                             "start": datasets.Value("int64"),
                             "end": datasets.Value("int64"),
-                            # "label": datasets.ClassLabel(names=["HEADER", "QUESTION", "ANSWER"]),
                             "label": datasets.ClassLabel(names=labels),
                         }
                     ),
@@ -264,8 +261,8 @@ class XFUN(datasets.GeneratorBasedBuilder):
 
 
 def generate_examples():
-    filepaths = [['/work/Codes/layoutlmft/examples/data/征信报告/data/标注批1部分批2/zh.train.json',
-                  '/work/Codes/layoutlmft/examples/data/征信报告/data/标注批1部分批2']]
+    filepaths = [['/work/Codes/layoutlmft/examples/data//data/标注批1部分批2/zh.train.json',
+                  '/work/Codes/layoutlmft/examples/data//data/标注批1部分批2']]
 
     tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
     # labels = ['OTHER', 'QUESTION', 'ANSWER', 'KV']

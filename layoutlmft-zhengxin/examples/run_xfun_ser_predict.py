@@ -15,7 +15,7 @@ from typing import Optional
 import numpy as np
 from datasets import ClassLabel, load_dataset, load_metric
 
-import layoutlmft.data.datasets.xfun
+# import layoutlmft.data.datasets.xfun
 import layoutlmft.data.datasets.xfun_predict
 import transformers
 from layoutlmft.data import DataCollatorForKeyValueExtraction

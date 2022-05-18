@@ -5,7 +5,7 @@ import logging
 import os
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '7'
-os.environ["WANDB_DISABLED"] = "true"
+os.environ["WANDB_DISABLED"] = 'true'
 
 import sys
 import time

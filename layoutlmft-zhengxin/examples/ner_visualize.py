@@ -15,8 +15,7 @@ logger = logging.getLogger(__name__)
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
 
-def _generate_examples(preds_path, filepaths,output_path):
-
+def _generate_examples(preds_path, filepaths, output_path):
     items = []
     for filepath in filepaths:
         logger.info("Generating examples from = %s", filepath)
@@ -188,7 +187,7 @@ def _generate_examples(preds_path, filepaths,output_path):
     docs = {}
     for i, item in enumerate(items):
         item['pred'] = preds[i]
-        _, _, uid, chu = item['id'].split('_')
+        uid, chu = item['id'].split('_')
         if uid in docs:
             docs[uid] += [item]
         else:
@@ -218,11 +217,12 @@ def _generate_examples(preds_path, filepaths,output_path):
 
         assert len(offset) == len(bbox_src) == len(pred) == len(tokens) == len(labels)
 
-        img_path = os.path.join(filepaths[0][1], 'zh_val_%s.jpg' % doc_id)
-        save_path = os.path.join(output_path, 'zh_val_%s.jpg' % doc_id)
+        img_path = os.path.join(filepaths[0][1], 'zh.val/img_%s.png' % doc_id)
+        save_path = os.path.join(output_path, 'zh.val_%s.png' % doc_id)
         if not os.path.exists(os.path.dirname(save_path)):
             os.makedirs(os.path.dirname(save_path))
-        img = cv2.imread(img_path)
+
+        img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), -1)
 
         def draw_rec(img, results, tokens):
             end = -1
@@ -250,12 +250,8 @@ def _generate_examples(preds_path, filepaths,output_path):
                     y1 = min(y1)
                     x2 = max(x2)
                     y2 = max(y2)
-                    if tag == 'QUESTION':
-                        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 1)
-                    elif tag == 'ANSWER':
-                        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 1)
-                    else:
-                        cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 1)
+                    print(tag2colour[tag])
+                    cv2.rectangle(img, (x1, y1), (x2, y2), tag2colour[tag], 2)
             return img
 
         def function(image1, image2):
@@ -278,15 +274,27 @@ def _generate_examples(preds_path, filepaths,output_path):
         #     for t, l in zip(tokens, labels):
         #         f.write(t + '\t' + l + '\n')
 
+def sample_line_colour():
+    labels = ['.100', '200.201', '200.202', '.300', '.301', '.302', '.303',
+              '.400', '.401', '.405', '.406', '500.501', '500.502', '500.503']
+    colours = []
+    for a in [0, 120, 255]:
+        for b in [0, 120, 255]:
+            for c in [0, 120, 255]:
+                colours.append((a, b, c))
+    colours.remove((255, 255, 255))
+    return dict(zip(labels, colours[:len(labels)]))
+
+
 
 if __name__ == '__main__':
     '''
     将实体的识别结果跟真是结果显示在图片中
     '''
+    tag2colour = sample_line_colour()
+    preds_path = '../../data/zhengxin/data/标注批1部分批2/test_predictions.txt'
+    filepaths = [['../../data/zhengxin/data/标注批1部分批2/zh.val.json',
+                  '../../data/zhengxin/data/标注批1部分批2/']]
 
-    preds_path = './data/xfund-and-funsd/models/test-ner-xfund/test_predictions.txt'
-    filepaths = [['./data/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json',
-                  './data/xfund-and-funsd/XFUND-and-FUNSD/zh.val']]
-
-    output_path = './data/xfund-and-funsd/ner_visualize'
+    output_path = '../../data/zhengxin/data/标注批1部分批2/ner_visualize'
     _generate_examples(preds_path, filepaths, output_path)
