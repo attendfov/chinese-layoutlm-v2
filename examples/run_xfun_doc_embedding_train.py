@@ -85,8 +85,8 @@ def main():
 
     from layoutlmft.data.datasets.xfun_doc_embedding import _generate_examples
 
-    filepaths = [['./data/gartner_data/data/zh.test.json',
-                  './data/gartner_data/data/zh.test']]
+    filepaths = [['../data/gartner_data/data/zh.test.json',
+                  '../data/gartner_data/data/zh.test']]
 
     train, dev, test = _generate_examples(filepaths)
 

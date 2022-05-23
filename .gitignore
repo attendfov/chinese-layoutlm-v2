@@ -1,9 +1,6 @@
 
 
-data/zhengxin/data/*
-data/zhengxin/documents/*
-data/doc-embedding/all_data
-data/doc-embedding/pdfminer_for_img
+data/*
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,pycharm+all

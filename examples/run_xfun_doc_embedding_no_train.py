@@ -17,7 +17,7 @@ from layoutlmft.data.data_args import XFUNDataTrainingArguments
 from layoutlmft.data.data_collator_doc_embedding_no_train import DataCollatorForKeyValueExtraction
 from layoutlmft.evaluation import re_score
 from layoutlmft.models.model_args import ModelArguments
-from layoutlmft.trainers import XfunReTrainer
+from layoutlmft.trainers import DocEmbedding
 from transformers import (
     AutoConfig,
     AutoTokenizer,
@@ -87,31 +87,8 @@ def main():
         additional_langs=data_args.additional_langs,
         keep_in_memory=True,
     )
-    if training_args.do_train:
-        column_names = datasets["train"].column_names
-        features = datasets["train"].features
-    elif training_args.do_eval:
-        column_names = datasets["validation"].column_names
-        features = datasets["validation"].features
-    else:
-        column_names = datasets["test"].column_names
-        features = datasets["test"].features
-    text_column_name = "input_ids"
-    label_column_name = "labels"
 
-    remove_columns = column_names
-
-    # In the event the labels are not a `Sequence[ClassLabel]`, we will need to go through the dataset to get the
-    # unique labels.
-    def get_label_list(labels):
-        unique_labels = set()
-        for label in labels:
-            unique_labels = unique_labels | set(label)
-        label_list = list(unique_labels)
-        label_list.sort()
-        return label_list
-
-    with open(os.path.join(os.getcwd(), "data/gartner_data/data/datasets_labels.json"),
+    with open(os.path.join(os.getcwd(), "../data/gartner_data/data/datasets_labels.json"),
               'r', encoding='utf-8') as f:
         label_list = json.load(f)['labels']
     label_to_id = {l: i for i, l in enumerate(label_list)}
@@ -188,7 +165,7 @@ def main():
         return score
 
     # Initialize our Trainer
-    trainer = XfunReTrainer(
+    trainer = DocEmbedding(
         model=model,
         args=training_args,
         train_dataset=train_dataset if training_args.do_train else None,
