@@ -10,7 +10,8 @@ from transformers import AutoTokenizer
 
 
 _URL = os.path.join(os.getcwd(), "../data/xfund-and-funsd/XFUND-and-FUNSD/")
-
+predicted_ner_result = os.path.join(os.getcwd(),
+                                            "../data/xfund-and-funsd/models/test-ner-xfund/test_predictions.txt")
 
 _LANG = ["zh", "de", "es", "fr", "en", "it", "ja", "pt"]
 logger = logging.getLogger(__name__)
@@ -239,8 +240,7 @@ class XFUN(datasets.GeneratorBasedBuilder):
                     # yield f"{doc['id']}_{chunk_id}", item
                     items.append(item)
 
-        predicted_ner_result = os.path.join(os.getcwd(),
-                                            "data/xfund-and-funsd/models/test-ner-xfund/test_predictions.txt")
+
         with open(predicted_ner_result, 'r') as f:
             preds = []
             for line in f.readlines():

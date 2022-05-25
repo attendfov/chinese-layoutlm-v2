@@ -297,10 +297,10 @@ if __name__ == '__main__':
     '''
     将关系的识别结果跟真是结果显示在图片中
     '''
-    preds_path = './data/xfund-and-funsd/models/test-re-xfund/test_predictions_re.json'
+    preds_path = '../data/xfund-and-funsd/models/test-re-xfund/test_predictions_re.json'
 
-    filepaths = [['./data/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json',
-                  './data/xfund-and-funsd/XFUND-and-FUNSD/zh.val']]
+    filepaths = [['../data/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json',
+                  '../data/xfund-and-funsd/XFUND-and-FUNSD/zh.val']]
 
-    output_path = './data/xfund-and-funsd/re_visualize'
+    output_path = '../data/xfund-and-funsd/re_visualize'
     _generate_examples(preds_path, filepaths, output_path)

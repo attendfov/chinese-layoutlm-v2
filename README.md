@@ -19,7 +19,7 @@ data/
 目录pretrained-models/layoutxlm-base[链接](https://pan.baidu.com/s/1tFlF_-zzV45GL5eDlJVG5A?pwd=svbw)   
 
 # Key-Value Pair抽取
-
+## steps
 1. python run_xfun_ser.py 进行实体识别训练  
   `python run_xfun_ser.py
    --model_name_or_path
@@ -54,8 +54,9 @@ steps
    `
 2. python run_xfun_re.py 进行关系抽取训练，使用datasets.xfun_pipline.py
 进行数据的读取，处理  
-  `--model_name_or_path
-../data/pretrained_model/layoutxlm-base
+`python run_xfun_re.py
+ --model_name_or_path
+../data/pretrained-models/layoutxlm-base
 --output_dir
 ../data/xfund-and-funsd/models/test-re-xfund
 --do_train
@@ -86,7 +87,7 @@ steps
 --learning_rate
 3e-5`
 
-3. pred_data_process.py 在进行实体识别前，对bbox进行 行对齐  
+3. (Optional) pred_data_process.py 在进行实体识别前，对bbox进行 行对齐  
   使用行对齐操作，使得模型在推理阶段f1提升1.2%
 
 4. 实体预测
@@ -115,19 +116,20 @@ zh
 0.1
 --fp16`
 
-6. ner_visualize.py 识别出的实体和Ground True的可视化
+6. ner_visualize.py 识别出的实体和Ground Truth的可视化
 
 7. re_visualize.py 关系的可视化
 
-8. results_process_for_re.py  将对齐的实体识别结果处理成re输入格式，测试的不使用
+## file explain
+1. results_process_for_re.py  将对齐的实体识别结果处理成re输入格式，测试的不使用
 
-9. python app.py  
+2. python app.py  
 a. 端到端KV关系抽取服务      
 b. 输入visual rich document，输出key value pair可视化结果  
 
 # Document Embedding
 ## 算法
-- 基于SBERT中有监督学习训练算法
+- 基于Sentence-BERT中有监督学习训练算法
 
 ## Train mode
 - 样例数据准备
