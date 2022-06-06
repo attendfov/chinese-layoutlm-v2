@@ -22,7 +22,7 @@ data/
 ## steps
 1. python run_xfun_ser.py 进行实体识别训练  
   `python run_xfun_ser.py
-   --model_name_or_path
+   --model_name_or_path 
 ../data/pretrained-models/layoutxlm-base
 --output_dir
 ../data/xfund-and-funsd/models/test-ner-xfund
