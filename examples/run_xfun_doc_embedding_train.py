@@ -8,16 +8,18 @@ import json
 os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 os.environ["WANDB_DISABLED"] = "true"
 import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import time
 import transformers
 from layoutlmft.models.doc_embedding import docEmbeddingModel
+from layoutlmft.data.datasets.xfun_doc_embedding import _generate_examples
 from layoutlmft.data.data_args import XFUNDataTrainingArguments
 from layoutlmft.data.data_collator_doc_embedding import DataCollatorForKeyValueExtraction
 from layoutlmft.evaluation import re_score
 from layoutlmft.models.model_args import ModelArguments
-from layoutlmft.trainers import XfunReTrainer
+from layoutlmft.trainers import DocEmbedding
 from transformers import (
     AutoConfig,
     AutoTokenizer,
@@ -85,12 +87,7 @@ def main():
     # Set seed before initializing model.
     set_seed(training_args.seed)
 
-    from layoutlmft.data.datasets.xfun_doc_embedding import _generate_examples
-
-    filepaths = [['../data/gartner_data/data/zh.test.json',
-                  '../data/gartner_data/data/zh.test']]
-
-    train, dev, test = _generate_examples(filepaths)
+    train, dev, test = _generate_examples()
 
     def get_label_list(labels):
         unique_labels = set()
@@ -158,7 +155,7 @@ def main():
         from sklearn.metrics import f1_score, precision_score, recall_score, precision_recall_fscore_support
 
         preds, labels = p
-        preds = preds.cpu().numpy()
+        preds = preds.cpu().numpy().argmax(axis=-1)
         labels = labels.cpu().numpy()
         score = {}
         p, r, f, _ = precision_recall_fscore_support(y_true=labels, y_pred=preds, labels=[0, 1], average=None)
@@ -174,7 +171,7 @@ def main():
         return score
 
     # Initialize our Trainer
-    trainer = XfunReTrainer(
+    trainer = DocEmbedding(
         model=model,
         args=training_args,
         train_dataset=train if training_args.do_train else None,
@@ -229,7 +226,7 @@ def main():
         print('test datasets num is %d' % len(outputs['preds']))
         output_test_predictions_file = os.path.join(training_args.output_dir, "predictions_embedding_train.json")
         with open(output_test_predictions_file, 'w') as f:
-            json.dump({'reps': outputs['reps'].cpu().numpy().tolist(), 'doc-labels':doc_labels}, f)
+            json.dump({'reps': outputs['reps'].cpu().numpy().tolist(), 'doc-labels': doc_labels}, f)
 
 
 def _mp_fn(index):

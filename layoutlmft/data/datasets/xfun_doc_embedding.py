@@ -13,9 +13,11 @@ import collections
 from layoutlmft.data.utils import load_image, merge_bbox, normalize_bbox, simplify_bbox
 from transformers import AutoTokenizer
 
-
 _LANG = ["zh", "de", "es", "fr", "en", "it", "ja", "pt"]
 logger = logging.getLogger(__name__)
+
+filepaths = [['../DATA/gartner-data/data/zh.test.json',
+              '../DATA/gartner-data/data/zh.test']]
 
 
 def sample_neg_item(item, other_labels, label2items, neg_pos_rate):
@@ -67,7 +69,7 @@ def gene_doc_embedding_predict_data(items):
     return train_data
 
 
-def _generate_examples(filepaths):
+def _generate_examples():
     tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
     for filepath in filepaths:

@@ -28,7 +28,7 @@
 
 2. python run_xfun_re.py 进行关系抽取训练，使用datasets.xfun_pipline.py
 进行数据的读取，处理   
-`python run_xfun_re.py --model_name_or_path ../DATA/pretrained-models/layoutxlm-base --output_dir ../DATA/xfund-and-funsd/models/test-re-xfund --logging_dir ../DATA/xfund-and-funsd/runs/re-xfund --do_train --do_eval --lang zh --num_train_epochs 100 --warmup_ratio 0.1 --additional_langs all --per_device_train_batch_size 16 --per_device_eval_batch_size 16 --save_steps 300 --logging_steps 300 --evaluation_strategy steps --eval_steps 300 --learning_rate 3e-5`
+`python run_xfun_re.py --model_name_or_path ../DATA/pretrained-models/layoutxlm-base --output_dir ../DATA/xfund-and-funsd/models/test-re-xfund --logging_dir ../DATA/xfund-and-funsd/runs/re-xfund --do_train --do_eval --lang zh --num_train_epochs 100 --warmup_ratio 0.1 --additional_langs all --per_device_train_batch_size 16 --per_device_eval_batch_size 16 --save_steps 300 --logging_steps 300 --evaluation_strategy steps --eval_steps 300 --learning_rate 3e-5 --fp16`
 
 3. 可选(Optional) 执行pred_data_process.py，会在进行实体识别前，对bbox进行 行对齐  
   使用行对齐操作，使得模型在推理阶段f1提升1.2%  
@@ -57,59 +57,17 @@ b. 输入visual rich document，输出key value pair可视化结果
 ## 算法
 - 基于Sentence-BERT中有监督学习训练算法
 
-## Train mode
-- 样例数据准备
-
-- 模型训练
-` python run_xfun_doc_embedding_train.py
---model_name_or_path
-../data/pretrained-models/layoutxlm-base
---output_dir
-../data/gartner_data/models
---do_train
---do_eval
---lang
-zh
---num_train_epochs
-100
---warmup_ratio
-0.1
---fp16
---additional_langs
-all
---per_device_train_batch_size
-8
---per_device_eval_batch_size
-8
---logging_dir
-../data/gartner_data/runs
---save_steps
-300
---logging_steps
-300
---evaluation_strategy
-steps
---eval_steps
-300
---learning_rate
-3e-5`
-
+## Train mode  
+- 样例数据准备  
+- 模型训练  
+`python run_xfun_doc_embedding_train.py --model_name_or_path ../DATA/pretrained-models/layoutxlm-base --output_dir ../DATA/gartner-data/models --logging_dir ../DATA/gartner-data/runs --do_train --do_eval --lang zh --num_train_epochs 100 --warmup_ratio 0.1 --fp16 --additional_langs all --per_device_train_batch_size 8 --per_device_eval_batch_size 8 --save_steps 300 --logging_steps 300 --evaluation_strategy steps --eval_steps 300 --learning_rate 3e-5`
 
 ## No Train mode
-
 - 文档向量化
-` python run_xfun_doc_embedding_no_train
---model_name_or_path
-../data/pretrained-models/layoutxlm-base
---output_dir
-../data/gartner_data/embedding_no_train/
---do_predict
---lang
-zh
---warmup_ratio
-0.1
---fp16`
+` python run_xfun_doc_embedding_no_train.py --model_name_or_path ../DATA/pretrained-models/layoutxlm-base --output_dir ../DATA/gartner-data/embedding_no_train/ --do_predict --lang zh --warmup_ratio 0.1 --fp16`
 
+## Tips
+1. 修改数据的预处理方式之后，需要清除缓存~/.cache/huggingface/datasets，否则模型会直接使用缓存中的数据，造成数据修改失败
 
 
 Part of the code from [link](https://github.com/microsoft/unilm/tree/master/layoutlmft)

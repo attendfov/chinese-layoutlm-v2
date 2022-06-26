@@ -5,7 +5,7 @@ import logging
 import os
 import json
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 os.environ["WANDB_DISABLED"] = "true"
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

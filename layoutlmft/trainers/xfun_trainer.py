@@ -101,44 +101,40 @@ class XfunReTrainer(FunsdTrainer):
             self.control = self.callback_handler.on_prediction_step(self.args, self.state, self.control)
 
         gt_relations = []
-        # for b in range(len(re_labels)):
-        #     rel_sent = []
-        #     for head, tail in zip(re_labels[b]["head"], re_labels[b]["tail"]):
-        #         rel = {}
-        #         rel["head_id"] = head
-        #         rel["head"] = (entities[b]["start"][rel["head_id"]], entities[b]["end"][rel["head_id"]])
-        #         rel["head_type"] = entities[b]["label"][rel["head_id"]]
-        #
-        #         rel["tail_id"] = tail
-        #         try:
-        #             rel["tail"] = (entities[b]["start"][rel["tail_id"]], entities[b]["end"][rel["tail_id"]])
-        #         except:
-        #             print(1)
-        #         rel["tail_type"] = entities[b]["label"][rel["tail_id"]]
-        #
-        #         rel["type"] = 1
-        #
-        #         rel_sent.append(rel)
-        #
-        #     gt_relations.append(rel_sent)
-        #
-        # re_metrics = self.compute_metrics(EvalPrediction(predictions=pred_relations, label_ids=gt_relations))
+        for b in range(len(re_labels)):
+            rel_sent = []
+            for head, tail in zip(re_labels[b]["head"], re_labels[b]["tail"]):
+                rel = {}
+                rel["head_id"] = head
+                rel["head"] = (entities[b]["start"][rel["head_id"]], entities[b]["end"][rel["head_id"]])
+                rel["head_type"] = entities[b]["label"][rel["head_id"]]
 
-        # re_metrics = {
-        #     "precision": re_metrics["ALL"]["p"],
-        #     "recall": re_metrics["ALL"]["r"],
-        #     "f1": re_metrics["ALL"]["f1"],
-        # }
-        # re_metrics[f"{metric_key_prefix}_loss"] = outputs.loss.mean().item()
+                rel["tail_id"] = tail
+                rel["tail"] = (entities[b]["start"][rel["tail_id"]], entities[b]["end"][rel["tail_id"]])
+                rel["tail_type"] = entities[b]["label"][rel["tail_id"]]
+                rel["type"] = 1
+
+                rel_sent.append(rel)
+
+            gt_relations.append(rel_sent)
+
+        re_metrics = self.compute_metrics(EvalPrediction(predictions=pred_relations, label_ids=gt_relations))
+
+        re_metrics = {
+            "precision": re_metrics["ALL"]["p"],
+            "recall": re_metrics["ALL"]["r"],
+            "f1": re_metrics["ALL"]["f1"],
+        }
+        re_metrics[f"{metric_key_prefix}_loss"] = outputs.loss.mean().item()
 
         metrics = {}
 
-        # # Prefix all keys with metric_key_prefix + '_'
-        # for key in list(re_metrics.keys()):
-        #     if not key.startswith(f"{metric_key_prefix}_"):
-        #         metrics[f"{metric_key_prefix}_{key}"] = re_metrics.pop(key)
-        #     else:
-        #         metrics[f"{key}"] = re_metrics.pop(key)
+        # Prefix all keys with metric_key_prefix + '_'
+        for key in list(re_metrics.keys()):
+            if not key.startswith(f"{metric_key_prefix}_"):
+                metrics[f"{metric_key_prefix}_{key}"] = re_metrics.pop(key)
+            else:
+                metrics[f"{key}"] = re_metrics.pop(key)
 
         # return metrics
         return PredictionOutput(pred_relations, gt_relations, metrics)
@@ -212,7 +208,7 @@ class DocEmbedding(FunsdTrainer):
             inputs: Dict[str, Union[torch.Tensor, Any]],
             prediction_loss_only: bool,
             ignore_keys: Optional[List[str]] = None,
-    ) -> Tuple[Optional[float], Optional[torch.Tensor], Optional[torch.Tensor]]:
+    ):
         inputs = self._prepare_inputs(inputs)
 
         with torch.no_grad():
@@ -269,13 +265,15 @@ class DocEmbedding(FunsdTrainer):
         preds = None
         for step, inputs in enumerate(dataloader):
             outputs, labels = self.prediction_step(model, inputs, prediction_loss_only, ignore_keys=ignore_keys)
-            re_labels = labels[0] if re_labels is None else re_labels + labels[0]
-            preds = outputs if preds is None else torch.cat([preds, outputs])
+            re_labels = labels[0] if re_labels is None else torch.cat([re_labels, labels[0]], dim=-1)
+            preds = outputs['preds'] if preds is None else torch.cat([preds, outputs['preds']])
 
             self.control = self.callback_handler.on_prediction_step(self.args, self.state, self.control)
 
-        metrics = {}
-
+        if self.compute_metrics is not None and preds is not None and re_labels is not None:
+            metrics = self.compute_metrics(EvalPrediction(predictions=preds, label_ids=re_labels))
+        else:
+            metrics = {}
         return PredictionOutput(preds, re_labels, metrics)
 
     def evaluate(
