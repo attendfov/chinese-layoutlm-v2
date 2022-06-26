@@ -8,6 +8,8 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 os.environ["WANDB_DISABLED"] = "true"
 
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import time
 from dataclasses import dataclass, field
 from typing import Optional
@@ -15,7 +17,7 @@ from typing import Optional
 import numpy as np
 from datasets import ClassLabel, load_dataset, load_metric
 
-import layoutlmft.data.datasets.xfun
+# import layoutlmft.data.datasets.xfun
 import layoutlmft.data.datasets.xfun_predict
 import transformers
 from layoutlmft.data import DataCollatorForKeyValueExtraction

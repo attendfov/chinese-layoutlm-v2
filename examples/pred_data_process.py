@@ -57,12 +57,10 @@ def align_bbox(input_path, save_path):
         json.dump(data, f, ensure_ascii=False)
 
 
-
-
 if __name__ == '__main__':
     '''
     在进行实体识别前，对bbox进行 行对齐
     '''
-    json_path = '/work/Datasets/Doc-understanding/XFUND/XFUND-DATA/zh.val.json'
-    save_path = '/work/Datasets/Doc-understanding/XFUND/XFUND-DATA/zh.val.align.json'
+    json_path = '../DATA/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json'
+    save_path = '../DATA/xfund-and-funsd/XFUND-and-FUNSD/zh.val.align.json'
     align_bbox(json_path, save_path)

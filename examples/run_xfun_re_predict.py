@@ -8,11 +8,12 @@ import json
 os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
 from datasets import ClassLabel, load_dataset
 
-import layoutlmft.data.datasets.xfun
+# import layoutlmft.data.datasets.xfun
 import layoutlmft.data.datasets.xfun_re_predict_data_from_ner
 import transformers
 from layoutlmft import AutoModelForRelationExtraction

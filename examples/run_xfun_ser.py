@@ -8,10 +8,14 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 os.environ["WANDB_DISABLED"] = "true"
 
 import sys
+
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+print(os.path.dirname(os.path.abspath(__file__)))
+
 import time
 from dataclasses import dataclass, field
 from typing import Optional
-
 import numpy as np
 from datasets import ClassLabel, load_dataset, load_metric
 
@@ -38,6 +42,7 @@ from transformers.utils import check_min_version
 check_min_version("4.5.0")
 
 logger = logging.getLogger(__name__)
+
 
 
 def main():

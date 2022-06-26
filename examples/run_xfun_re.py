@@ -5,10 +5,12 @@ import logging
 import os
 import json
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 os.environ["WANDB_DISABLED"] = "true"
 
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import time
 import numpy as np
 from datasets import ClassLabel, load_dataset
@@ -202,6 +204,7 @@ def main():
     def compute_metrics(p):
         pred_relations, gt_relations = p
         score = re_score(pred_relations, gt_relations, mode="boundaries")
+        print(score)
         return score
 
     # Initialize our Trainer

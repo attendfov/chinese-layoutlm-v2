@@ -8,6 +8,8 @@ import json
 os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 os.environ["WANDB_DISABLED"] = "true"
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from datasets import ClassLabel, load_dataset
 
 import layoutlmft.data.datasets.xfun_doc_embedding_no_train

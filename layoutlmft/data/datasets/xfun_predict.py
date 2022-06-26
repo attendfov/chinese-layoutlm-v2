@@ -9,7 +9,7 @@ from layoutlmft.data.utils import load_image, merge_bbox, normalize_bbox, simpli
 from transformers import AutoTokenizer
 
 
-_URL = os.path.join(os.getcwd(), "../data/xfund-and-funsd/XFUND-and-FUNSD/")
+_URL = os.path.join(os.getcwd(), "../DATA/xfund-and-funsd/XFUND-and-FUNSD/")
 print(_URL)
 
 _LANG = ["zh", "de", "es", "fr", "en", "it", "ja", "pt"]
@@ -74,6 +74,7 @@ class XFUN(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         urls_to_download = {
             "test": [f"{_URL}{self.config.lang}.val.json", f"{_URL}{self.config.lang}.val.zip"],
+            # "test": [f"{_URL}{self.config.lang}.val.json", f"{_URL}{self.config.lang}.val.align.zip"],
         }
         downloaded_files = dl_manager.download_and_extract(urls_to_download)
 

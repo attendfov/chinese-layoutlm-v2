@@ -8,10 +8,9 @@ import datasets
 from layoutlmft.data.utils import load_image, merge_bbox, normalize_bbox, simplify_bbox
 from transformers import AutoTokenizer
 
-
-_URL = os.path.join(os.getcwd(), "../data/xfund-and-funsd/XFUND-and-FUNSD/")
+_URL = os.path.join(os.getcwd(), "../DATA/xfund-and-funsd/XFUND-and-FUNSD/")
 predicted_ner_result = os.path.join(os.getcwd(),
-                                            "../data/xfund-and-funsd/models/test-ner-xfund/test_predictions.txt")
+                                    "../DATA/xfund-and-funsd/models/test-ner-xfund/test_predictions.txt")
 
 _LANG = ["zh", "de", "es", "fr", "en", "it", "ja", "pt"]
 logger = logging.getLogger(__name__)
@@ -200,15 +199,15 @@ class XFUN(datasets.GeneratorBasedBuilder):
                 for chunk_id, index in enumerate(range(0, len(tokenized_doc["input_ids"]), chunk_size)):
                     item = {}
                     for k in tokenized_doc:
-                        item[k] = tokenized_doc[k][index : index + chunk_size]
+                        item[k] = tokenized_doc[k][index: index + chunk_size]
                     # entities_in_this_span保存切分后的所有实体
                     entities_in_this_span = []
                     # global_to_this_span 为切分的实体id-->切分后的实体id
                     global_to_local_map = {}
                     for entity_id, entity in enumerate(entities):
                         if (
-                            index <= entity["start"] < index + chunk_size
-                            and index <= entity["end"] < index + chunk_size
+                                index <= entity["start"] < index + chunk_size
+                                and index <= entity["end"] < index + chunk_size
                         ):
                             entity["start"] = entity["start"] - index
                             entity["end"] = entity["end"] - index
@@ -218,8 +217,8 @@ class XFUN(datasets.GeneratorBasedBuilder):
                     for relation in relations:
                         # relation_span: start_index前实体的start，end_index尾实体的end
                         if (
-                            index <= relation["start_index"] < index + chunk_size
-                            and index <= relation["end_index"] < index + chunk_size
+                                index <= relation["start_index"] < index + chunk_size
+                                and index <= relation["end_index"] < index + chunk_size
                         ):
                             relations_in_this_span.append(
                                 {
@@ -239,7 +238,6 @@ class XFUN(datasets.GeneratorBasedBuilder):
                     )
                     # yield f"{doc['id']}_{chunk_id}", item
                     items.append(item)
-
 
         with open(predicted_ner_result, 'r') as f:
             preds = []

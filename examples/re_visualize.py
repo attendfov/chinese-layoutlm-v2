@@ -5,6 +5,8 @@ import os
 import cv2
 import copy
 import numpy as np
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from layoutlmft.data.utils import load_image, merge_bbox, normalize_bbox, simplify_bbox
 from transformers import AutoTokenizer
@@ -209,7 +211,6 @@ def _generate_examples(preds_path, filepaths, output_path):
             if lines == []:
                 lines.extend(d['lines'])
         line = ' '.join(lines)
-        print(len(line))
         tokenizer_output = tokenizer(
             line,
             add_special_tokens=False,
@@ -297,10 +298,10 @@ if __name__ == '__main__':
     '''
     将关系的识别结果跟真是结果显示在图片中
     '''
-    preds_path = '../data/xfund-and-funsd/models/test-re-xfund/test_predictions_re.json'
+    preds_path = '../DATA/xfund-and-funsd/models/test-re-xfund/test_predictions_re.json'
 
-    filepaths = [['../data/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json',
-                  '../data/xfund-and-funsd/XFUND-and-FUNSD/zh.val']]
+    filepaths = [['../DATA/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json',
+                  '../DATA/xfund-and-funsd/XFUND-and-FUNSD/zh.val']]
 
-    output_path = '../data/xfund-and-funsd/re_visualize'
+    output_path = '../DATA/xfund-and-funsd/re_visualize'
     _generate_examples(preds_path, filepaths, output_path)

@@ -8,6 +8,8 @@ import json
 os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 os.environ["WANDB_DISABLED"] = "true"
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import time
 import transformers
 from layoutlmft.models.doc_embedding import docEmbeddingModel

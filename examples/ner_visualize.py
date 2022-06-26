@@ -227,8 +227,6 @@ def _generate_examples(preds_path, filepaths,output_path):
         def draw_rec(img, results, tokens):
             end = -1
             for index, p in enumerate(results):
-                if index == 166:
-                    print(1)
                 if index < end:
                     continue
                 if p == 'O':
@@ -284,9 +282,9 @@ if __name__ == '__main__':
     将实体的识别结果跟真是结果显示在图片中
     '''
 
-    preds_path = '../data/xfund-and-funsd/models/test-ner-xfund/test_predictions.txt'
-    filepaths = [['../data/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json',
-                  '../data/xfund-and-funsd/XFUND-and-FUNSD/zh.val']]
+    preds_path = '../DATA/xfund-and-funsd/models/test-ner-xfund/test_predictions.txt'
+    filepaths = [['../DATA/xfund-and-funsd/XFUND-and-FUNSD/zh.val.json',
+                  '../DATA/xfund-and-funsd/XFUND-and-FUNSD/zh.val']]
 
-    output_path = '../data/xfund-and-funsd/ner_visualize'
+    output_path = '../DATA/xfund-and-funsd/ner_visualize'
     _generate_examples(preds_path, filepaths, output_path)
